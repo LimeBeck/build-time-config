@@ -3,7 +3,6 @@ package dev.limebeck
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import java.io.File
 import java.security.InvalidParameterException
 import kotlin.reflect.full.isSubclassOf
 
