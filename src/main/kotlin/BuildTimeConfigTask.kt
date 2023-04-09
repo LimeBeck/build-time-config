@@ -18,14 +18,18 @@ abstract class BuildTimeConfigTask : DefaultTask() {
     @Suppress("unused")
     @TaskAction
     fun run() {
-//        doLast {
         configs.forEach { config ->
             val file = generateKotlinFile(config)
-            println(file)
+            val filename = config.objectName + ".kt"
+            logger.debug(
+                """
+                |Configuration: $config
+                |Generated file: 
+                |$file
+                |"""".trimMargin()
+            )
             config.destinationDir.mkdirs()
-            File(config.destinationDir, config.objectName + ".kt").writeText(file)
+            File(config.destinationDir, filename).writeText(file)
         }
-        println("It`s Worked!")
-//        }
     }
 }

@@ -1,5 +1,6 @@
 package dev.limebeck
 
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
@@ -7,11 +8,11 @@ import java.io.File
 import kotlin.reflect.KClass
 
 data class Config(
-    @Internal
+    @Input
     val configName: String,
-    @Internal
+    @Input
     val packageName: String,
-    @Internal
+    @Input
     val objectName: String,
     @Nested
     val properties: List<ConfigPropertyHolder>,
@@ -22,18 +23,17 @@ data class Config(
 sealed class ConfigPropertyHolder(open val name: String)
 
 data class ConfigProperty<T : Any>(
-    @Internal
+    @Input
     override val name: String,
     @Internal
     val type: KClass<T>,
-    @Internal
+    @Input
     val value: T?
 ) : ConfigPropertyHolder(name)
 
 data class ConfigObject(
-    @Internal
+    @Input
     override val name: String,
     @Nested
     val properties: List<ConfigPropertyHolder>,
 ) : ConfigPropertyHolder(name)
-

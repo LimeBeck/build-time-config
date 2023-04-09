@@ -4,7 +4,7 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.tasks.Internal
 
-open class ConfigsHolderExtension(
+open class BuildTimeConfigProjectExtension(
     private val project: Project
 ) {
     @Internal
@@ -15,6 +15,5 @@ open class ConfigsHolderExtension(
         val builder = ConfigBuilder(name, project.objects)
         action.execute(builder)
         configs.add(builder.build())
-        println("<217d9e5f> ConfigsHolder called: $configs")
     }
 }

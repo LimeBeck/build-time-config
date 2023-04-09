@@ -4,19 +4,27 @@ import org.gradle.api.Action
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import java.io.File
 import kotlin.reflect.KClass
 
 open class ConfigBuilder(
+    @Input
     val name: String? = null,
     private val objectFactory: ObjectFactory
 ) {
+
+    @Input
     val packageName: Property<String> = objectFactory.property(String::class.java)
+
+    @Input
     val objectName: Property<String> = objectFactory.property(String::class.java)
 
     @OutputDirectory
     val destination: RegularFileProperty = objectFactory.fileProperty()
+
+    @Input
     val allProperties: MutableList<ConfigPropertyHolder> = mutableListOf()
 
     internal fun build(): Config {
@@ -66,13 +74,13 @@ open class ConfigPropertiesBuilder {
         action.execute(builder)
         allConfigProperties.add(ConfigObject(name, builder.allConfigProperties))
     }
+
+    data class ConfigPropertyDefinition<T : Any>(
+        val name: String,
+        val type: KClass<T>
+    )
+
+    data class ConfigObjectDefinition(
+        val name: String
+    )
 }
-
-data class ConfigPropertyDefinition<T : Any>(
-    val name: String,
-    val type: KClass<T>
-)
-
-data class ConfigObjectDefinition(
-    val name: String
-)

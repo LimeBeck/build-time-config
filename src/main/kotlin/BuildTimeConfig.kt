@@ -9,13 +9,12 @@ class BuildTimeConfig : Plugin<Project> {
     override fun apply(target: Project) {
         val extension = target.extensions.create(
             /* name = */ "buildTimeConfig",
-            /* type = */ ConfigsHolderExtension::class.java,
+            /* type = */ BuildTimeConfigProjectExtension::class.java,
             /* ...constructionArguments = */ target
         )
 
         target.afterEvaluate {
             val task = target.tasks.register("generateConfig", BuildTimeConfigTask::class.java) {
-                println("<256f7cfc> Task run")
                 it.configs = extension.configs
             }
 
