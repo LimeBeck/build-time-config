@@ -1,6 +1,7 @@
 package dev.limebeck
 
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputDirectory
 import java.io.File
 import kotlin.reflect.KClass
@@ -12,7 +13,7 @@ data class Config(
     val packageName: String,
     @Internal
     val objectName: String,
-    @Internal
+    @Nested
     val properties: List<ConfigProperty<*>>,
     @OutputDirectory
     val destinationDir: File

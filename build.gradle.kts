@@ -29,9 +29,14 @@ kotlin {
 }
 
 gradlePlugin {
+    website.set("https://github.com/LimeBeck/BuildTimeConfig")
+    vcsUrl.set("https://github.com/LimeBeck/BuildTimeConfig.git")
     plugins {
         create("buildTimeConfig") {
             id = "dev.limebeck.build-time-config"
+            displayName = "Kotlin Build-Time Config"
+            description = "Gradle plugin for providing build-time configuration properties for kotlin application"
+            tags.set(listOf("kotlin", "config"))
             implementationClass = "dev.limebeck.BuildTimeConfig"
         }
     }
