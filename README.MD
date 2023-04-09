@@ -57,6 +57,7 @@ public object MyConfig {
 ```
 
 You can use config like this:
+
 `Application.kt`
 ```kotlin
 import dev.limebeck.config.MyConfig
