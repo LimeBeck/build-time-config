@@ -19,6 +19,9 @@ buildTimeConfig {
             property<String>("someProp") set "SomeValue"
             property<Int>("someProp2") set 123
             property<Boolean>("someProp3") set true
+            obj("nested") set {
+                property<String>("someProp") set "SomeValue"
+            }
         }
     }
 }
