@@ -20,7 +20,9 @@ data class Config(
     val destinationDir: File
 )
 
-sealed class ConfigPropertyHolder(open val name: String)
+sealed class ConfigPropertyHolder(
+    @Input open val name: String
+)
 
 data class ConfigProperty<T : Any>(
     @Input
