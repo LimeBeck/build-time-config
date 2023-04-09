@@ -6,7 +6,7 @@
 ```kotlin
 plugins {
     kotlin("jvm") version "1.8.0"
-    id("dev.limebeck.build-time-config") version "1.0.0"
+    id("dev.limebeck.build-time-config") version "1.1.0"
 }
 ...
 buildTimeConfig {
