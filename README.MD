@@ -32,8 +32,9 @@ buildTimeConfig {
 import dev.limebeck.config.MyConfig
 
 class Application {
-    val data = MyConfig.someProp
-    val data2 = MyConfig.someProp2
-    val data3 = MyConfig.someProp3
+    val data: String = MyConfig.someProp
+    val data2: Int = MyConfig.someProp2
+    val data3: Boolean = MyConfig.someProp3
+    val obj: String = MyConfig.nested.someProp
 }
 ```
