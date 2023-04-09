@@ -6,24 +6,37 @@ import com.squareup.kotlinpoet.TypeSpec
 import java.security.InvalidParameterException
 import kotlin.reflect.full.isSubclassOf
 
-fun generateKotlinFile(config: Config): String {
-    val properties = config.properties.map {
-        val template = when {
-            it.type.isSubclassOf(Boolean::class) -> "%L"
-            it.type.isSubclassOf(Number::class) -> "%L"
-            it.type.isSubclassOf(String::class) -> "%S"
-            else -> throw InvalidParameterException("<4ac3a89c> Unknown property type ${it.type}")
+fun TypeSpec.Builder.makeProperty(prop: ConfigPropertyHolder) {
+    when (prop) {
+        is ConfigObject -> {
+            val type = TypeSpec.objectBuilder(prop.name).also { b ->
+                prop.properties.forEach { b.makeProperty(it) }
+            }.build()
+            addType(type)
         }
-        PropertySpec
-            .builder(it.name, it.type)
-            .initializer(template, it.value)
-            .build()
-    }
 
+        is ConfigProperty<*> -> {
+            val template = when {
+                prop.type.isSubclassOf(Boolean::class) -> "%L"
+                prop.type.isSubclassOf(Number::class) -> "%L"
+                prop.type.isSubclassOf(String::class) -> "%S"
+                else -> throw InvalidParameterException("<4ac3a89c> Unknown property type ${prop.type}")
+            }
+            val prop = PropertySpec
+                .builder(prop.name, prop.type)
+                .initializer(template, prop.value)
+                .build()
+            addProperty(prop)
+        }
+    }
+}
+
+fun generateKotlinFile(config: Config): String {
     val propertyObj = TypeSpec
         .objectBuilder(config.objectName)
-        .addProperties(properties)
-        .build()
+        .apply {
+            config.properties.forEach { makeProperty(it) }
+        }.build()
 
     val fileSpec = FileSpec
         .builder(config.packageName, config.objectName + ".kt")

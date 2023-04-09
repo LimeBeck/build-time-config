@@ -1,5 +1,4 @@
 [versions]
-gradle = "7.4.2"
 kotlin = "1.8.20"
 dokka = "1.8.10"
 

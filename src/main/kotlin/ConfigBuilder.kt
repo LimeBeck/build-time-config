@@ -17,7 +17,7 @@ open class ConfigBuilder(
 
     @OutputDirectory
     val destination: RegularFileProperty = objectFactory.fileProperty()
-    val allProperties: MutableList<ConfigProperty<*>> = mutableListOf()
+    val allProperties: MutableList<ConfigPropertyHolder> = mutableListOf()
 
     internal fun build(): Config {
         val name = name ?: "unnamed"
@@ -39,12 +39,13 @@ open class ConfigBuilder(
 }
 
 open class ConfigPropertiesBuilder {
-    val allConfigProperties: MutableList<dev.limebeck.ConfigProperty<*>> = mutableListOf()
+    val allConfigProperties: MutableList<ConfigPropertyHolder> = mutableListOf()
 
     fun <T : Any> property(name: String, type: KClass<T>): ConfigPropertyDefinition<T> {
         return ConfigPropertyDefinition(name, type)
     }
 
+    @Suppress("UNUSED")
     inline fun <reified T : Any> property(name: String) = property(name, T::class)
 
     infix fun <T : Any> ConfigPropertyDefinition<T>.set(value: T?) {
@@ -56,9 +57,22 @@ open class ConfigPropertiesBuilder {
             )
         )
     }
+
+    @Suppress("UNUSED")
+    fun obj(name: String) = ConfigObjectDefinition(name)
+
+    infix fun ConfigObjectDefinition.set(action: Action<ConfigPropertiesBuilder>) {
+        val builder = ConfigPropertiesBuilder()
+        action.execute(builder)
+        allConfigProperties.add(ConfigObject(name, builder.allConfigProperties))
+    }
 }
 
 data class ConfigPropertyDefinition<T : Any>(
     val name: String,
     val type: KClass<T>
+)
+
+data class ConfigObjectDefinition(
+    val name: String
 )

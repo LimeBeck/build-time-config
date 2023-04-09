@@ -14,16 +14,26 @@ data class Config(
     @Internal
     val objectName: String,
     @Nested
-    val properties: List<ConfigProperty<*>>,
+    val properties: List<ConfigPropertyHolder>,
     @OutputDirectory
     val destinationDir: File
 )
 
+sealed class ConfigPropertyHolder(open val name: String)
+
 data class ConfigProperty<T : Any>(
     @Internal
-    val name: String,
+    override val name: String,
     @Internal
     val type: KClass<T>,
     @Internal
     val value: T?
-)
+) : ConfigPropertyHolder(name)
+
+data class ConfigObject(
+    @Internal
+    override val name: String,
+    @Nested
+    val properties: List<ConfigPropertyHolder>,
+) : ConfigPropertyHolder(name)
+
