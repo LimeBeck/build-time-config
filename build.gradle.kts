@@ -3,11 +3,11 @@ plugins {
     alias(libs.plugins.mavenPublish)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.versions)
-    id("java-gradle-plugin")
+    `java-gradle-plugin`
 }
 
 group = "dev.limebeck"
-version = "1.1.1"
+version = "1.1.2"
 
 repositories {
     mavenCentral()

@@ -1,12 +1,14 @@
 # Gradle plugin for providing build-time configuration properties
 
+![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/dev.limebeck.build-time-config)
+
 ## Usage
 
 `build.gradle.kts`:
 ```kotlin
 plugins {
     kotlin("jvm") version "1.8.0"
-    id("dev.limebeck.build-time-config") version "1.1.1"
+    id("dev.limebeck.build-time-config") version "1.1.2"
 }
 ...
 buildTimeConfig {
