@@ -17,7 +17,9 @@ dependencies {
     compileOnly(gradleApi())
     implementation(libs.kotlin.plugin)
     implementation(libs.kotlinpoet)
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.21")
     testImplementation(kotlin("test"))
+    testImplementation(gradleTestKit())
 }
 
 tasks.test {
@@ -25,7 +27,7 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(17)
 }
 
 gradlePlugin {
