@@ -17,7 +17,7 @@ dependencies {
     compileOnly(gradleApi())
     implementation(libs.kotlin.plugin)
     implementation(libs.kotlinpoet)
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.21")
+    testImplementation(libs.kotlin.stdlib)
     testImplementation(kotlin("test"))
     testImplementation(gradleTestKit())
 }
