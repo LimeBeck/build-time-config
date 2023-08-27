@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.mavenPublish)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.versions)
     `java-gradle-plugin`
@@ -17,7 +16,9 @@ dependencies {
     compileOnly(gradleApi())
     implementation(libs.kotlin.plugin)
     implementation(libs.kotlinpoet)
+    testImplementation(libs.kotlin.stdlib)
     testImplementation(kotlin("test"))
+    testImplementation(gradleTestKit())
 }
 
 tasks.test {
