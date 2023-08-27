@@ -1,5 +1,6 @@
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -7,6 +8,7 @@ import java.nio.file.Path
 import kotlin.io.path.createFile
 import kotlin.io.path.writeText
 import kotlin.io.path.createDirectories
+import kotlin.io.path.readText
 import kotlin.test.assertEquals
 
 class PluginTest {
@@ -61,5 +63,32 @@ class PluginTest {
 
         val codeGenerationResult = gradleRunner.withArguments("generateConfig").build()
         assertEquals(TaskOutcome.SUCCESS, codeGenerationResult.task(":generateConfig")!!.outcome)
+        val resultFile = testProjectDir.resolve("./build/unnamed/MyConfig.kt").readText().trim()
+        @Language("kotlin") val expectedGeneratedFileContent = """
+            package dev.limebeck.config
+
+            import kotlin.Boolean
+            import kotlin.Double
+            import kotlin.Int
+            import kotlin.Long
+            import kotlin.String
+
+            public object MyConfig {
+              public val someProp: String = "SomeValue"
+
+              public val someProp2: Int = 123
+
+              public val someProp3: Double = 123.0
+
+              public val someProp4: Long = 123
+
+              public val someProp5: Boolean = true
+
+              public object nested {
+                public val someProp: String = "SomeValue"
+              }
+            }
+        """.trimIndent()
+        assertEquals(expectedGeneratedFileContent, resultFile)
     }
 }
