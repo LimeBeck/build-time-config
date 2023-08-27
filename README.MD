@@ -4,34 +4,70 @@
 
 ## Usage
 
-`build.gradle.kts`:
-```kotlin
-plugins {
-    kotlin("jvm") version "1.8.0"
-    id("dev.limebeck.build-time-config") version "1.1.2"
-}
-...
-buildTimeConfig {
-    config {
-        packageName.set("dev.limebeck.config")
-        objectName.set("MyConfig")
-        destination.set(project.buildDir)
+There is two API-styles available
 
-        configProperties {
-            property<String>("someProp") set "SomeValue"
-            property<Int>("someProp2") set 123
-            property<Double>("someProp3") set 123.0
-            property<Long>("someProp4") set 123L
-            property<Boolean>("someProp5") set true
-            obj("nested") set {
-                property<String>("someProp") set "SomeValue"
+1. New-style API (based on delegates)
+
+    `build.gradle.kts`:
+    
+    ```kotlin
+    plugins {
+        kotlin("jvm") version "1.8.0"
+        id("dev.limebeck.build-time-config") version "2.0.0"
+    }
+    ...
+    buildTimeConfig {
+        config {
+            packageName.set("dev.limebeck.config")
+            objectName.set("MyConfig")
+            destination.set(project.buildDir)
+    
+            configProperties {
+                val someProp by string("SomeValue")
+                val someProp2 by number(123)
+                val someProp3 by number(123.0)
+                val someProp4 by number(123L)
+                val someProp5 by bool(true) //also can be boolean(true)
+                val nested by obj {
+                    val someProp by string("SomeValue")
+                }
             }
         }
     }
-}
-```
+    ```
 
-Will generate code like this:
+2. Old-style API (DEPRECATED)
+
+    `build.gradle.kts`:
+    
+    ```kotlin
+    plugins {
+        kotlin("jvm") version "1.8.0"
+        id("dev.limebeck.build-time-config") version "2.0.0"
+    }
+    ...
+    buildTimeConfig {
+        config {
+            packageName.set("dev.limebeck.config")
+            objectName.set("MyConfig")
+            destination.set(project.buildDir)
+    
+            configProperties {
+                property<String>("someProp") set "SomeValue"
+                property<Int>("someProp2") set 123
+                property<Double>("someProp3") set 123.0
+                property<Long>("someProp4") set 123L
+                property<Boolean>("someProp5") set true
+                obj("nested") set {
+                    property<String>("someProp") set "SomeValue"
+                }
+            }
+        }
+    }
+    ```
+
+Both will generate code like this:
+
 ```kotlin
 package dev.limebeck.config
 
@@ -61,6 +97,7 @@ public object MyConfig {
 You can use config like this:
 
 `Application.kt`
+
 ```kotlin
 import dev.limebeck.config.MyConfig
 

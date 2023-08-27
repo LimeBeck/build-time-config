@@ -21,7 +21,7 @@ abstract class BuildTimeConfigTask : DefaultTask() {
         configs.forEach { config ->
             val file = generateKotlinFile(config)
             val filename = config.objectName + ".kt"
-            logger.debug(
+            logger.info(
                 """
                 |Configuration: $config
                 |Generated file: 
