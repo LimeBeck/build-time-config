@@ -23,7 +23,9 @@ There is two API-styles available
             destination.set(project.buildDir)
     
             configProperties {
-                val someProp by string("SomeValue")
+                val someProp: String by string("SomeValue")
+                val somePropNullable: String? by string(null)
+                val somePropNullableFilled: String? by string("null")
                 val someProp2 by number(123)
                 val someProp3 by number(123.0)
                 val someProp4 by number(123L)
