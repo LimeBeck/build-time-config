@@ -1,4 +1,4 @@
-package dev.limebeck.delegates;
+package dev.limebeck.delegates
 
 import dev.limebeck.ConfigPropertiesBuilder
 import dev.limebeck.LiteralTemplateConfigProperty
@@ -7,32 +7,33 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
-open class LiteralTemplateConfigPropertyDelegate<T : Any>(
+open class LiteralTemplateConfigPropertyDelegate<T, R : T & Any>(
     val value: T,
-    val type: KClass<T>,
+    val type: KClass<R>,
     val template: String,
     val configPropertiesBuilder: ConfigPropertiesBuilder
 ) {
     operator fun provideDelegate(
         thisRef: Nothing?,
         prop: KProperty<*>
-    ): ReadOnlyProperty<Nothing?, LiteralTemplateConfigProperty<T>> {
+    ): ReadOnlyProperty<Nothing?, T> {
         val prop = LiteralTemplateConfigProperty(
             name = prop.name,
             template = template,
             value = value,
-            type = type
+            type = type,
+            nullable = prop.returnType.isMarkedNullable
         )
         configPropertiesBuilder.allConfigProperties.add(prop)
-        return ReadOnlyProperty { _, _ -> prop }
+        return ReadOnlyProperty { _, _ -> value }
     }
 }
 
-open class NumberTemplateConfigPropertyDelegate<T : Number>(
+open class NumberTemplateConfigPropertyDelegate<T : Number?, R : T & Any>(
     value: T,
-    type: KClass<T>,
+    type: KClass<R>,
     configPropertiesBuilder: ConfigPropertiesBuilder,
-) : LiteralTemplateConfigPropertyDelegate<T>(
+) : LiteralTemplateConfigPropertyDelegate<T, R>(
     value = value,
     type = type,
     template = "%L",
@@ -47,7 +48,7 @@ open class ObjectConfigPropertyDelegate(
         thisRef: Nothing?,
         prop: KProperty<*>
     ): ReadOnlyProperty<Nothing?, ObjectConfigProperty> {
-        val builder = ConfigPropertiesBuilder().apply(valueBuilder)
+        val builder = ConfigPropertiesBuilder(valueBuilder)
         val prop = ObjectConfigProperty(
             name = prop.name,
             properties = builder.allConfigProperties

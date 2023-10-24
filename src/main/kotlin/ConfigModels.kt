@@ -3,10 +3,8 @@ package dev.limebeck
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Internal
-import org.gradle.api.tasks.Nested
-import org.gradle.api.tasks.OutputDirectory
+import com.squareup.kotlinpoet.asTypeName
+import org.gradle.api.tasks.*
 import java.io.File
 import kotlin.reflect.KClass
 
@@ -42,19 +40,22 @@ class ObjectConfigProperty(
     }
 }
 
-open class LiteralTemplateConfigProperty<T : Any>(
+open class LiteralTemplateConfigProperty<T, R : T & Any>(
     @Input
     val name: String,
+    @Input
+    val nullable: Boolean,
     @Internal
-    val type: KClass<T>,
+    val type: KClass<R>,
     @Input
     val template: String,
     @Input
-    val value: T?
+    @Optional
+    val value: T
 ) : ConfigProperty {
     override fun build(typeSpecBuilder: TypeSpec.Builder, fileSpecBuilder: FileSpec.Builder) {
         val prop = PropertySpec
-            .builder(name, type)
+            .builder(name, type.asTypeName().copy(nullable = nullable))
             .initializer(template, value)
             .build()
         typeSpecBuilder.addProperty(prop)
