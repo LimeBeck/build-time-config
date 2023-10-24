@@ -13,7 +13,7 @@ There is two API-styles available
     ```kotlin
     plugins {
         kotlin("jvm") version "1.8.0"
-        id("dev.limebeck.build-time-config") version "2.0.0"
+        id("dev.limebeck.build-time-config") version "2.1.0"
     }
     ...
     buildTimeConfig {
