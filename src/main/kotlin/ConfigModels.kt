@@ -6,7 +6,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import org.gradle.api.tasks.*
 import java.io.File
-import kotlin.reflect.KClass
+import kotlin.reflect.KType
 
 
 data class Config(
@@ -40,13 +40,11 @@ class ObjectConfigProperty(
     }
 }
 
-open class LiteralTemplateConfigProperty<T, R : T & Any>(
+open class LiteralTemplateConfigProperty<T>(
     @Input
     val name: String,
-    @Input
-    val nullable: Boolean,
     @Internal
-    val type: KClass<R>,
+    val type: KType,
     @Input
     val template: String,
     @Input
@@ -55,7 +53,7 @@ open class LiteralTemplateConfigProperty<T, R : T & Any>(
 ) : ConfigProperty {
     override fun build(typeSpecBuilder: TypeSpec.Builder, fileSpecBuilder: FileSpec.Builder) {
         val prop = PropertySpec
-            .builder(name, type.asTypeName().copy(nullable = nullable))
+            .builder(name, type.asTypeName())
             .initializer(template, value)
             .build()
         typeSpecBuilder.addProperty(prop)

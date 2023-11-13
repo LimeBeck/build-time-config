@@ -1,3 +1,4 @@
+import dev.limebeck.ConfigPropertiesBuilder
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
 import org.intellij.lang.annotations.Language
@@ -126,7 +127,7 @@ class PluginTest {
                     }
                 }
             }
-        """.trimIndent()
+            """.trimIndent()
         )
 
         val codeGenerationResult = gradleRunner.withArguments("generateConfig").build()
@@ -184,11 +185,26 @@ class PluginTest {
                     }
                 }
             }
-        """.trimIndent()
+            """.trimIndent()
         )
 
         assertFails {
             gradleRunner.withArguments("generateConfig").build()
+        }
+    }
+
+    fun dslProbe() {
+        ConfigPropertiesBuilder {
+            val someProp: String by string("SomeValue")
+            val somePropNullable: String? by string(null)
+            val somePropNullableFilled: String? by string("null" as String?)
+            val someProp2 by number(123)
+            val someProp3 by number(123.0)
+            val someProp4 by number(123L)
+            val someProp5 by bool(true)
+            val nested by obj {
+                val someProp by string("SomeValue")
+            }
         }
     }
 }

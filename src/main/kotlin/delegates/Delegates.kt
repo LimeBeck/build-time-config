@@ -4,12 +4,10 @@ import dev.limebeck.ConfigPropertiesBuilder
 import dev.limebeck.LiteralTemplateConfigProperty
 import dev.limebeck.ObjectConfigProperty
 import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
-open class LiteralTemplateConfigPropertyDelegate<T, R : T & Any>(
+open class LiteralTemplateConfigPropertyDelegate<T>(
     val value: T,
-    val type: KClass<R>,
     val template: String,
     val configPropertiesBuilder: ConfigPropertiesBuilder
 ) {
@@ -17,25 +15,22 @@ open class LiteralTemplateConfigPropertyDelegate<T, R : T & Any>(
         thisRef: Nothing?,
         prop: KProperty<*>
     ): ReadOnlyProperty<Nothing?, T> {
-        val prop = LiteralTemplateConfigProperty(
+        val property = LiteralTemplateConfigProperty(
             name = prop.name,
             template = template,
             value = value,
-            type = type,
-            nullable = prop.returnType.isMarkedNullable
+            type = prop.returnType
         )
-        configPropertiesBuilder.allConfigProperties.add(prop)
+        configPropertiesBuilder.allConfigProperties.add(property)
         return ReadOnlyProperty { _, _ -> value }
     }
 }
 
-open class NumberTemplateConfigPropertyDelegate<T : Number?, R : T & Any>(
+open class NumberTemplateConfigPropertyDelegate<T : Number?>(
     value: T,
-    type: KClass<R>,
     configPropertiesBuilder: ConfigPropertiesBuilder,
-) : LiteralTemplateConfigPropertyDelegate<T, R>(
+) : LiteralTemplateConfigPropertyDelegate<T>(
     value = value,
-    type = type,
     template = "%L",
     configPropertiesBuilder = configPropertiesBuilder
 )
