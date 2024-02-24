@@ -18,18 +18,18 @@ class BuildTimeConfig : Plugin<Project> {
                 it.configs = extension.configs
             }
 
-            val kotlinJvmExtension = target.extensions.findByType(KotlinJvmProjectExtension::class.java)
-            val kotlinMppExtension = target.extensions.findByType(KotlinMultiplatformExtension::class.java)
+            val targetSourceSet = extension.targetSourceSet.orNull ?: kotlin.run {
+                val kotlinJvmExtension = target.extensions.findByType(KotlinJvmProjectExtension::class.java)
+                val kotlinMppExtension = target.extensions.findByType(KotlinMultiplatformExtension::class.java)
 
-            val sourceSets = kotlinJvmExtension?.sourceSets
-                ?: kotlinMppExtension?.sourceSets?.filter { it.name == "commonMain" }?.takeIf { it.isNotEmpty() }
-
-            if (sourceSets == null) {
-                target.logger.warn("BuildTimeConfig worked only with KotlinJvm or KotlinMultiplatform plugin. None of them found")
+                kotlinJvmExtension?.sourceSets?.find { it.name == "main" }
+                    ?: kotlinMppExtension?.sourceSets?.find { it.name == "commonMain" }
             }
 
-            sourceSets?.forEach {
-                it.kotlin.srcDirs(task.map { it.destinations.values })
+            if (targetSourceSet == null) {
+                target.logger.warn("BuildTimeConfig worked only with KotlinJvm or KotlinMultiplatform plugin. None of them found")
+            } else {
+                targetSourceSet.kotlin.srcDirs(task.map { it.destinations.values })
             }
         }
     }
