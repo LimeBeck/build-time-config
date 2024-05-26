@@ -12,8 +12,8 @@ There is two API-styles available
     
     ```kotlin
     plugins {
-        kotlin("jvm") version "1.8.0"
-        id("dev.limebeck.build-time-config") version "2.1.0"
+        kotlin("jvm") version "2.0.0"
+        id("dev.limebeck.build-time-config") version "2.3.0"
     }
     ...
     buildTimeConfig {
@@ -44,8 +44,8 @@ There is two API-styles available
     
     ```kotlin
     plugins {
-        kotlin("jvm") version "1.8.0"
-        id("dev.limebeck.build-time-config") version "2.0.0"
+        kotlin("jvm") version "2.0.0"
+        id("dev.limebeck.build-time-config") version "2.3.0"
     }
     ...
     buildTimeConfig {
@@ -79,19 +79,27 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
-public object MyConfig {
-    public val someProp: String = "SomeValue"
+public object MyConfigNew {
+    public val stringProp: String = "SomeValue"
 
-    public val someProp2: Int = 123
+    public val stringPropNullable: String? = null
 
-    public val someProp3: Double = 123.0
+    public val stringPropNullableFilled: String? = "null"
 
-    public val someProp4: Long = 123
+    public val intProp: Int = 123
 
-    public val someProp5: Boolean = true
+    public val doubleProp: Double = 123.0
 
-    public object nested {
-        public val someProp: String = "SomeValue"
+    public val longProp: Long = 123
+
+    public val boolProp: Boolean = true
+
+    public val nested: Nested = object : Nested {
+        override val stringProp: String = "SomeValue"
+    }
+
+    public interface Nested {
+        public val stringProp: String
     }
 }
 ```
@@ -112,3 +120,5 @@ class Application {
     val obj: String = MyConfig.nested.someProp
 }
 ```
+
+Example available in `example/build.gradle.kts` and `example/src/test/kotlin/ConfigurationTest.kt`

@@ -31,6 +31,10 @@ class BuildTimeConfig : Plugin<Project> {
             } else {
                 targetSourceSet.kotlin.srcDirs(task.map { it.destinations.values })
             }
+
+            if (extension.generateOnSync.get()) {
+                target.tasks.maybeCreate("prepareKotlinIdeaImport").dependsOn(task)
+            }
         }
     }
 }

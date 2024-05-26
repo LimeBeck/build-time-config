@@ -1,11 +1,10 @@
 package dev.limebeck
 
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asTypeName
+import com.squareup.kotlinpoet.*
 import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Optional
 import java.io.File
+import java.util.*
 import kotlin.reflect.KType
 
 
@@ -26,6 +25,11 @@ interface ConfigProperty {
     fun build(typeSpecBuilder: TypeSpec.Builder, fileSpecBuilder: FileSpec.Builder)
 }
 
+
+fun TypeSpec.Builder.applyProperties(fileSpecBuilder: FileSpec.Builder, properties: List<ConfigProperty>) = apply {
+    properties.forEach { it.build(this, fileSpecBuilder) }
+}
+
 class ObjectConfigProperty(
     @Input
     val name: String,
@@ -33,10 +37,42 @@ class ObjectConfigProperty(
     val properties: List<ConfigProperty>
 ) : ConfigProperty {
     override fun build(typeSpecBuilder: TypeSpec.Builder, fileSpecBuilder: FileSpec.Builder) {
-        val type = TypeSpec.objectBuilder(name).also { b ->
-            properties.forEach { it.build(b, fileSpecBuilder) }
-        }.build()
-        typeSpecBuilder.addType(type)
+        val capitalizedName = name.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+        }
+
+        val interfaceTypeName = ClassName("", capitalizedName)
+
+        val interfaceType = TypeSpec.interfaceBuilder(capitalizedName)
+            .applyProperties(fileSpecBuilder, properties)
+            .also { b ->
+                b.propertySpecs.replaceAll { p ->
+                    val propBuilder = p.toBuilder()
+                    propBuilder.initializer(null)
+                    propBuilder.build()
+                }
+            }.build()
+
+        typeSpecBuilder.addType(interfaceType)
+
+        val typeObject = TypeSpec.anonymousClassBuilder()
+            .addSuperinterfaces(listOf(interfaceTypeName))
+            .applyProperties(fileSpecBuilder, properties)
+            .also { b ->
+                b.propertySpecs.replaceAll { p ->
+                    val propBuilder = p.toBuilder()
+                    propBuilder.addModifiers(KModifier.OVERRIDE)
+                    propBuilder.build()
+                }
+            }
+            .build()
+
+        val property = PropertySpec
+            .builder(name, interfaceTypeName)
+            .initializer("%L", typeObject)
+            .build()
+
+        typeSpecBuilder.addProperty(property)
     }
 }
 

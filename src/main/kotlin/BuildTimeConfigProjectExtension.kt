@@ -16,6 +16,9 @@ open class BuildTimeConfigProjectExtension(
     @Input
     val targetSourceSet: Property<KotlinSourceSet> = project.objects.property(KotlinSourceSet::class.java)
 
+    @Input
+    val generateOnSync: Property<Boolean> = project.objects.property(Boolean::class.java).convention(true)
+
     @Suppress("UNUSED")
     fun config(name: String? = null, action: Action<ConfigBuilder>) {
         val builder = ConfigBuilder(name, project.objects)
