@@ -91,8 +91,12 @@ class PluginTest {
 
               public val someProp5: Boolean = true
 
-              public object nested {
-                public val someProp: String = "SomeValue"
+              public val nested: Nested = object : Nested {
+                override val someProp: String = "SomeValue"
+              }
+            
+              public interface Nested {
+                public val someProp: String
               }
             }
         """.trimIndent()
@@ -158,8 +162,12 @@ class PluginTest {
 
               public val someProp5: Boolean = true
 
-              public object nested {
-                public val someProp: String = "SomeValue"
+              public val nested: Nested = object : Nested {
+                override val someProp: String = "SomeValue"
+              }
+            
+              public interface Nested {
+                public val someProp: String
               }
             }
         """.trimIndent()

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "dev.limebeck"
-version = "2.2.1"
+version = rootProject.version
 
 repositories {
     mavenCentral()
